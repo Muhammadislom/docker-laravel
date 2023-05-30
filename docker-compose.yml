@@ -1,0 +1,70 @@
+version: "3.7"
+services:
+  nginx:
+    container_name: nginx_${COMPOSE_PROJECT_NAME}
+    image: nginx:latest
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - ./docker/nginx/templates:/etc/nginx/templates
+    networks:
+      default:
+        ipv4_address: ${COMPOSE_PROJECT_NETWORK}.2
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    depends_on:
+      - php-fpm
+  php-fpm:
+    container_name: php_fpm_${COMPOSE_PROJECT_NAME}
+    image: php_fpm_${COMPOSE_PROJECT_NAME}
+    build:
+      args:
+        user: $COMPOSE_USER_NAME
+        uid: $COMPOSE_USER_UID
+      context: ./
+      dockerfile: docker/php-fpm/Dockerfile
+    volumes:
+      - ./:/app
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    networks:
+      default:
+        ipv4_address: ${COMPOSE_PROJECT_NETWORK}.3
+  postgres:
+    container_name: postgres_dental
+    image: postgres:14.5-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DATABASE: "${DB_DATABASE}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_ALLOW_EMPTY_PASSWORD: 1
+      POSTGRES_ROOT_PASSWORD: "root"
+    volumes:
+      - ../database:/var/lib/postgresql/data
+    ports:
+      - "8101:5432"
+    networks:
+      default:
+        ipv4_address: ${COMPOSE_PROJECT_NETWORK}.4
+  redis:
+    container_name: redis
+    image: redis:alpine
+#    restart: always
+#    ports:
+#      - '6379:6379'
+#    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+#    volumes:
+#      - /cache:/data
+    networks:
+      default:
+        ipv4_address: ${COMPOSE_PROJECT_NETWORK}.5
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${COMPOSE_PROJECT_NETWORK}.0/16
+          gateway: ${COMPOSE_PROJECT_NETWORK}.1
