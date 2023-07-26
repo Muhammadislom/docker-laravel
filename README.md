@@ -9,5 +9,5 @@
 ### Run docker compose
 
 ```
-composer require oooiik/laravel-query-filter
+docker-compose -f docker-compose.yml up -d
 ```
