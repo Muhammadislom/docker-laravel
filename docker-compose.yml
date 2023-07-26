@@ -17,6 +17,7 @@ services:
   php-fpm:
     container_name: php_fpm_${COMPOSE_PROJECT_NAME}
     image: php_fpm_${COMPOSE_PROJECT_NAME}
+    working_dir: /app
     build:
       args:
         user: $COMPOSE_USER_NAME
@@ -48,33 +49,42 @@ services:
     networks:
       default:
         ipv4_address: ${COMPOSE_PROJECT_NETWORK}.4
-  redis:
-    container_name: redis_${COMPOSE_PROJECT_NAME}
-    image: redis:alpine
-#    restart: always
-#    ports:
-#      - '6379:6379'
-#    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-#    volumes:
-#      - /cache:/data
+  mysql:
+    container_name: mysql_${COMPOSE_PROJECT_NAME}
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - mysql:/var/lib/mysql
     networks:
       default:
         ipv4_address: ${COMPOSE_PROJECT_NETWORK}.5
-  redis-commander:
-    image: rediscommander/redis-commander:latest
+  phpmyadmin:
+      container_name: phpmyadmin_${COMPOSE_PROJECT_NAME}
+      image: phpmyadmin:latest
+      environment:
+          PMA_HOST: mysql
+      #    PMA_ABSOLUTE_URI: pma
+      networks:
+          default:
+              ipv4_address: ${COMPOSE_PROJECT_NETWORK}.6
+      depends_on:
+          - mysql
+  redis:
+    container_name: redis_${COMPOSE_PROJECT_NAME}
+    image: redis:alpine
     restart: always
-    environment:
-      REDIS_HOSTS: redis
-      REDIS_HOST: redis
-      REDIS_PORT: redis:6379
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      HTTP_USER: root
-      HTTP_PASSWORD: root
     ports:
       - 8081:8081
     networks:
       default:
-        ipv4_address: ${COMPOSE_PROJECT_NETWORK}.6
+        ipv4_address: ${COMPOSE_PROJECT_NETWORK}.7
+volumes:
+  mysql:
+    driver: local
 networks:
   default:
     driver: bridge
