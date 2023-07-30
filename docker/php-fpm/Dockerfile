@@ -35,5 +35,5 @@ RUN mkdir -p /home/$user/.composer && \
 WORKDIR /app
 
 USER $user
-
+#CMD ["/bin/bash", "docker/php-fpm/entrypoint.sh"]
 #CMD ["php-fpm"]
