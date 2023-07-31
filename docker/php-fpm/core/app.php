@@ -33,4 +33,5 @@ foreach ($env as $_env) {
 
 file_put_contents('laravel/.env', $env_prod);
 
-//shell_exec('mv -v  laravel/* laravel/.* ./');
+shell_exec('mv -v  laravel/* laravel/.* ./');
+shell_exec('rm -rf laravel');
