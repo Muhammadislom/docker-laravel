@@ -28,10 +28,9 @@ foreach ($_env as $key => &$_environment) {
 }
 
 foreach ($env as $_env) {
-    $env_prod .= $_env ."\n";
+    $env_prod .= $_env . "\n";
 }
 
 file_put_contents(__DIR__ . '/laravel/.env', $env_prod);
 
-shell_exec('mv  laravel/* laravel/.* ../../../');
-//echo "<pre>$output</pre>";
+shell_exec('mv -v  laravel/* laravel/.* ../../../');

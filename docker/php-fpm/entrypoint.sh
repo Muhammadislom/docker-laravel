@@ -1,2 +1,2 @@
 #!/bin/bash
-read -p "project name" name
+php docker/php-fpm/core/app.php
