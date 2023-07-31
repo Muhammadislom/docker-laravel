@@ -3,7 +3,7 @@
 shell_exec('composer create laravel/laravel laravel');
 
 
-$env = explode(PHP_EOL, file_get_contents(__DIR__ . '/laravel/.env'));
+$env = explode(PHP_EOL, file_get_contents('/laravel/.env'));
 
 $_env = explode(PHP_EOL, file_get_contents('/app/.env'));
 
@@ -31,6 +31,6 @@ foreach ($env as $_env) {
     $env_prod .= $_env . "\n";
 }
 
-file_put_contents(__DIR__ . '/laravel/.env', $env_prod);
+file_put_contents('/laravel/.env', $env_prod);
 
-shell_exec('mv -v  laravel/* laravel/.* ../../../');
+shell_exec('mv -v  laravel/* laravel/.* ./');
