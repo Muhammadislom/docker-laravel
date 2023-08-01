@@ -38,4 +38,4 @@ USER $user
 
 #CMD ["php-fpm"]
 
-CMD ["/bin/bash", "docker/php-fpm/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "docker/php-fpm/entrypoint.sh"]
