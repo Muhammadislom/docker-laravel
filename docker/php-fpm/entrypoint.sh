@@ -1,7 +1,6 @@
 #!/bin/bash
 
-pwd
-if [ ! -f "/app/public/index.php" ];
+if [ ! -d "/app/public" ];
 then
   php docker/php-fpm/core/app.php
   echo "Installed )"
